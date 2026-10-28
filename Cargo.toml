@@ -1,0 +1,21 @@
+[package]
+name = "privbcast"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Broadcast one Bitcoin transaction through Tor as a private broadcast job"
+license = "MIT"
+publish = false
+
+# Every dependency is pinned exactly, and Cargo.lock is committed. See README.md, "Dependencies".
+[dependencies]
+# Transaction decoding, txid and wtxid; re-exports secp256k1 (ElligatorSwift, ECDH) and
+# bitcoin_hashes (SHA256, HMAC).
+bitcoin = { version = "=0.32.11", default-features = false, features = ["std"] }
+# ChaCha20 and ChaCha20-Poly1305 for BIP324, and the job's random generator.
+chacha20-poly1305 = { version = "=0.2.1", default-features = false }
+# The operating system's random number generator.
+getrandom = { version = "=0.4.3", default-features = false }
+
+[profile.release]
+overflow-checks = true

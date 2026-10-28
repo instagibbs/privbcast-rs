@@ -1,0 +1,147 @@
+== Proxy
+
+  greetings
+      core   {'050102': 1066}
+      rs     {'050102': 1066}
+      rs2    {'050102': 1066}
+  auth_versions
+      core   {1: 1066}
+      rs     {1: 1066}
+      rs2    {1: 1066}
+  credentials (user len, pw len, hex)
+      core   {'(32, 32, True)': 1066}
+      rs     {'(32, 32, True)': 1066}
+      rs2    {'(32, 32, True)': 1066}
+  cmd/port/atyp
+      core   {'CONNECT port 18444 atyp 3': 366, 'RESOLVE port 0 atyp 3': 700}
+      rs     {'CONNECT port 18444 atyp 3': 366, 'RESOLVE port 0 atyp 3': 700}
+      rs2    {'CONNECT port 18444 atyp 3': 366, 'RESOLVE port 0 atyp 3': 700}
+  RESOLVE names
+      core   ['seed-a.test.', 'seed-b.test.', 'seed-c.test.', 'seed-d.test.', 'seed-e.test.', 'seed-f.test.', 'seed-g.test.']
+      rs     ['seed-a.test.', 'seed-b.test.', 'seed-c.test.', 'seed-d.test.', 'seed-e.test.', 'seed-f.test.', 'seed-g.test.']
+      rs2    ['seed-a.test.', 'seed-b.test.', 'seed-c.test.', 'seed-d.test.', 'seed-e.test.', 'seed-f.test.', 'seed-g.test.']
+  credential sets over RESOLVEs
+      core   4
+      rs     4
+      rs2    4
+  RESOLVEs per set
+      core   [7, 7, 7, 7]
+      rs     [7, 7, 7, 7]
+      rs2    [7, 7, 7, 7]
+≠ launch order (seed letter + set), first 10
+      core   d0 d1 d2 d3 c0 c1 c2 c3 a0 a1
+      rs     g0 g1 g2 g3 c1 c2 c0 c3 f0 f1
+      rs2    g0 g1 g2 b2 b1 b0 g3 b3 a1 a0
+  CONNECT credentials all distinct, none shared with RESOLVE
+      core   True
+      rs     True
+      rs2    True
+≠ CONNECT destinations (sample)
+      core   ['11.0.2.1', '11.1.1.1', '11.2.2.1']
+      rs     ['11.0.1.1', '11.1.2.1', '11.2.0.1']
+      rs2    ['11.0.2.1', '11.1.1.1', '11.2.1.1']
+
+== BIP324 handshake
+
+  keys flagged as zero-randomness ElligatorSwift
+      core   0/342
+      rs     0/342
+      rs2    0/342
+  keys distinct
+      core   342/342
+      rs     342/342
+      rs2    342/342
+≠ garbage length: n, min, max, mean
+      core   [342, 12, 4050, 2007]
+      rs     [342, 19, 4061, 2009]
+      rs2    [342, 27, 4081, 1999]
+≠ garbage length: share in each quarter of 0-4095
+      core   [0.29, 0.21, 0.24, 0.27]
+      rs     [0.25, 0.28, 0.21, 0.25]
+      rs2    [0.26, 0.23, 0.29, 0.23]
+  decoy packets sent
+      core   0
+      rs     0
+      rs2    0
+  version packet contents
+      core   {'': 222}
+      rs     {'': 222}
+      rs2    {'': 222}
+  bytes sent after the garbage, before our version packet (36 = terminator + version packet; 169 = + VERSION)
+      core   {169: 6}
+      rs     {169: 6}
+      rs2    {169: 6}
+
+== Messages
+
+  message sequences (coop)
+      core   {'version wtxidrelay verack inv tx ping': 6}
+      rs     {'version wtxidrelay verack inv tx ping': 6}
+      rs2    {'version wtxidrelay verack inv tx ping': 6}
+  type, encoding, packet length
+      core   {'inv short 58': 6, 'ping short 29': 6, 'tx short ': 6, 'verack long 33': 6, 'version long 133': 6, 'wtxidrelay long 33': 6}
+      rs     {'inv short 58': 6, 'ping short 29': 6, 'tx short ': 6, 'verack long 33': 6, 'version long 133': 6, 'wtxidrelay long 33': 6}
+      rs2    {'inv short 58': 6, 'ping short 29': 6, 'tx short ': 6, 'verack long 33': 6, 'version long 133': 6, 'wtxidrelay long 33': 6}
+  VERSION payloads with the nonce zeroed (distinct)
+      core   1
+      rs     1
+      rs2    1
+  VERSION payload, nonce zeroed
+      core   ['80110100080000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000e2f70796e6f64653a302e302e312f0000000000']
+      rs     ['80110100080000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000e2f70796e6f64653a302e302e312f0000000000']
+      rs2    ['80110100080000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000e2f70796e6f64653a302e302e312f0000000000']
+≠ pairs that arrived in one recv() (localhost, indicative only)
+      core   {'<version packet>+version apart': 2, '<version packet>+version same': 4, 'tx+ping apart': 3, 'tx+ping same': 3, 'wtxidrelay+verack same': 6}
+      rs     {'<version packet>+version apart': 2, '<version packet>+version same': 4, 'tx+ping apart': 2, 'tx+ping same': 4, 'wtxidrelay+verack same': 6}
+      rs2    {'<version packet>+version apart': 1, '<version packet>+version same': 5, 'tx+ping same': 6, 'wtxidrelay+verack same': 6}
+
+== Scenarios: what each attempt did
+
+-- close_after_version
+-- coop
+-- flood
+-- getdata_extra_byte
+-- getdata_other
+≠ closes (how, ms after last message, 50 ms bins)
+      core   {"('fin', 3700)": 5, "('fin', 3750)": 1}
+      rs     {"('fin', 3700)": 4, "('fin', 3750)": 2}
+      rs2    {"('fin', 3750)": 6}
+-- getdata_twice
+-- low_version
+-- no_relay
+-- no_witness
+-- no_wtxidrelay
+-- noise
+-- noreq
+≠ closes (how, ms after last message, 50 ms bins)
+      core   {"('fin', 3700)": 5, "('fin', 3750)": 1}
+      rs     {"('fin', 3700)": 5, "('fin', 3750)": 1}
+      rs2    {"('fin', 3750)": 6}
+-- odd_answers
+≠ closes (how, ms after last message, 50 ms bins)
+      core   {"('fin', 3700)": 3, "('fin', 3750)": 3}
+      rs     {"('fin', 3700)": 3, "('fin', 3750)": 3}
+      rs2    {"('fin', 3750)": 6}
+≠ CONNECTs to odd answers
+      core   ['100:0:0:0:0:0:0:1', '192.88.99.1']
+      rs     ['192.0.0.9', 'ff02:0:0:0:0:0:0:1']
+      rs2    ['64:ff9b:0:0:0:0:102:304']
+-- peer_decoys
+-- pong_extra_byte
+-- pong_wrong
+≠ closes (how, ms after last message, 50 ms bins)
+      core   {"('fin', 450)": 4, "('fin', 500)": 2}
+      rs     {"('fin', 450)": 4, "('fin', 500)": 2}
+      rs2    {"('fin', 500)": 6}
+-- proxy_refuse
+-- silent
+-- slow_version_packet
+≠ closes (how, ms after last message, 50 ms bins)
+      core   {"('fin', 3700)": 6}
+      rs     {"('fin', 3700)": 6}
+      rs2    {"('fin', 3750)": 6}
+-- verack_payload
+-- version_extra_byte
+
+== Report schema
+
